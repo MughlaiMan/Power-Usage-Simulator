@@ -2,7 +2,7 @@ package groupAssignment2;
 
 public class Appliance{
     private String type; 
-    private int onWattage;
+    public int onWattage;
     private double probabilityOn;
     private String applianceID;
     private String locationID;
@@ -24,5 +24,10 @@ public class Appliance{
     
     public String getLocationID() {
     	return locationID;
+    }
+    
+    public int getOnWattage() {
+    	return onWattage;
+    	
     }
 }

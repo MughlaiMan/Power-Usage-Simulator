@@ -4,6 +4,9 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 
 
     //locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction);
@@ -20,7 +23,9 @@ public class PowerGridSimulation {
     
         Scanner scnr = new Scanner(System.in);
         System.out.println("Enter the total allowed wattage.");
+        // add input validation
         int totalAllowedWattage = scnr.nextInt();
+        // add input validation
         System.out.println("Enter the amount of timesteps.");
         int timeSteps = scnr.nextInt();
         
@@ -62,14 +67,21 @@ public class PowerGridSimulation {
             e.printStackTrace();
         }
         
+        // Sort appliances in descending order 
+        Collections.sort(applianceList, new Comparator<Appliance>(){
+        	public int compare(Appliance a1, Appliance a2) {
+        		return Integer.valueOf(a2.onWattage).compareTo(a1.onWattage);
+        	}
+        });
         
-        
+
         
         for (int i = 0; i < applianceList.size(); i++) {
         	
-        	System.out.println(applianceList.get(i).getLocationID());
+        	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnWattage());
         	
         }
+        
 
     } // end of main 
 
