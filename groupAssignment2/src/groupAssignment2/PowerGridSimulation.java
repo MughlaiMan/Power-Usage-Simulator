@@ -58,7 +58,10 @@ public class PowerGridSimulation {
                 double percentPowerReduction = Double.parseDouble(applianceInfo[5]);
                 
                 
+                
+                
                 Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction);
+                currentAppliance.setOnStatus(); 
                 applianceList.add(currentAppliance);
             }
         }
@@ -74,13 +77,95 @@ public class PowerGridSimulation {
         	}
         });
         
-
-        
-        for (int i = 0; i < applianceList.size(); i++) {
-        	
-        	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnWattage());
+        int totalPowerConsumption = 0;
+        for (int j = 0; j < applianceList.size(); j++) {
+        	if (applianceList.get(j).getOnStatus()) {
+        		totalPowerConsumption += applianceList.get(j).getOnWattage();
+        	}
         	
         }
+        //test
+        for (int a = 0; a < 5; a++ ) {
+        	System.out.print(applianceList.get(a).getSmartStatus() + " ");
+        	System.out.println(applianceList.get(a).getOnWattage());
+        }
+        
+        
+        
+        // setting smart appliances to low if allowed wattage is exceeded
+        if (totalPowerConsumption > totalAllowedWattage){
+        	for(int k = 0; k < applianceList.size(); k++) {
+        		
+        		
+        		if (applianceList.get(k).getSmartStatus()) {
+        			Appliance lowAppliance = new Appliance(applianceList.get(k).getLocationID(),
+								        					applianceList.get(k).getDescription(),
+								        					applianceList.get(k).getOnWattage(),
+								        					applianceList.get(k).getOnProbability(), 
+								        					applianceList.get(k).getSmartStatus(), 
+								        					applianceList.get(k).getPercentPowerReduction());
+					lowAppliance.setLowStatus();			        			
+        			
+        			applianceList.set(k,lowAppliance);
+        			
+        		}
+        		if(totalPowerConsumption <= totalAllowedWattage) {
+        			break;
+        		}
+        	}
+        }
+        
+        // brown out if total allowed wattage is still exceeded
+        
+        if (totalPowerConsumption > totalAllowedWattage) {
+        	
+        }
+        //test after
+        System.out.println("\nAfter");
+        for (int a = 0; a < 5; a++ ) {
+        	System.out.print(applianceList.get(a).getSmartStatus() + " ");
+        	System.out.println(applianceList.get(a).getOnWattage());
+        }
+        
+        
+        // Counting appliances in each location 
+        // index of locationList will be match the index of its Location counter in Location counterlist
+        ArrayList<Integer> locationCounterList = new ArrayList<>(); // number of appliances in each location 
+        ArrayList<String> locationList = new ArrayList<>(); // this list has the total unique locations
+        
+        for(int i = 0; i < applianceList.size(); i++) {
+        	String location = applianceList.get(i).getLocationID();
+        	if (locationList.indexOf(location) != -1) { // if the location has already been counted we will skip to 
+        												// the next iteration
+        		continue;
+        	}
+        	locationList.add(location); // adds location string to locationList to ensure we do not count the same location
+        	int locationCounter = 1; // first instance of location id
+        	
+        	for (int j = 0; j < applianceList.size(); j++) {
+        		if (j != i) {
+        			if (applianceList.get(j).equals(location)) {
+        				locationCounter++;
+        			}
+        		}
+        		
+        	}
+        	
+        	locationCounterList.add(Integer.valueOf(locationCounter));
+        }
+        
+        
+        // use this loop to test 
+        /*for (int i = 0; i < applianceList.size(); i++) {
+        	
+        	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnWattage() + 
+        			applianceList.get(i).getOnStatus() );
+        	
+        }
+        
+        System.out.println(totalPowerConsumption);
+        System.out.println(totalPowerConsumption / applianceList.size());
+        */
         
 
     } // end of main 

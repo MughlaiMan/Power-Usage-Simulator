@@ -1,4 +1,5 @@
 package groupAssignment2;
+import java.util.Random;
 
 public class Appliance{
     private String type; 
@@ -10,6 +11,9 @@ public class Appliance{
     private int powerReductionTotal;
     private String description;
     private boolean isSmart; 
+    private boolean isOn = false;
+    private boolean isLow = false;
+    
     
     public Appliance(String locID, String description, int onWatt, double probOn, boolean isSmart, double percentPowerReduction) {
     	locationID = locID;
@@ -25,9 +29,43 @@ public class Appliance{
     public String getLocationID() {
     	return locationID;
     }
+    public String getDescription() {
+    	return this.description;
+    }
+    
+    public double getOnProbability() {
+    	return this.probabilityOn;
+    }
+    public double getPercentPowerReduction() {
+    	return this.powerReductionPercentage;
+    }
+    
+    
     
     public int getOnWattage() {
     	return onWattage;
     	
+    }
+    
+    public void setOnStatus() {
+    	Random rand = new Random();
+    	if (rand.nextDouble() <= this.probabilityOn) {
+    		isOn = true;
+    	}
+    	else isOn = false;
+    	
+    	
+    }
+    
+    public boolean getOnStatus() {
+    	return isOn;
+    }
+    
+    public boolean getSmartStatus() {
+    	return this.isSmart;
+    }
+    
+    public void setLowStatus() {
+    	this.onWattage =(int) Math.ceil((double)this.onWattage * (1.0 - powerReductionPercentage));
     }
 }
