@@ -68,4 +68,9 @@ public class Appliance{
     public void setLowStatus() {
     	this.onWattage =(int) Math.ceil((double)this.onWattage * (1.0 - powerReductionPercentage));
     }
+    
+    public void setOnStatus(boolean isOn) {
+    	this.isOn = isOn;
+    }
+    
 }
