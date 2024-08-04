@@ -144,7 +144,7 @@ public class PowerGridSimulation {
         	
         	for (int j = 0; j < applianceList.size(); j++) {
         		if (j != i) {
-        			if (applianceList.get(j).equals(location)) {
+        			if (applianceList.get(j).getLocationID().equals(location)) {
         				locationCounter++;
         			}
         		}
@@ -153,6 +153,15 @@ public class PowerGridSimulation {
         	
         	locationCounterList.add(Integer.valueOf(locationCounter));
         }
+        
+        for (int a = 0; a <10 ; a++) {
+        	System.out.println(locationList.get(a) + ": "+ locationCounterList.get(a));
+        }
+        
+        
+        for()
+        
+        //test loop
         
         
         // use this loop to test 
