@@ -14,7 +14,6 @@ public class Appliance{
     private boolean isOn = false;
     private boolean isLow = false;
     
-    
     public Appliance(String locID, String description, int onWatt, double probOn, boolean isSmart, double percentPowerReduction) {
     	locationID = locID;
     	this.description = description; 
@@ -72,5 +71,11 @@ public class Appliance{
     public void setOnStatus(boolean isOn) {
     	this.isOn = isOn;
     }
+    
+    public void setApplianceID(String applianceID) {
+    	this.applianceID = applianceID;
+    }
+    
+    
     
 }
