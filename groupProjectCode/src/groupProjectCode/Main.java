@@ -159,6 +159,8 @@ public class Main {
 	        
 	        lowCount = 0;
 	        ArrayList<String> affectedLocations = new ArrayList<>();
+	        affectedLocations.add(" ");
+	        
 	        
 	        // setting smart appliances to low if allowed wattage is exceeded
 	        if (calcTotalPowerUsage(applianceList) > totalAllowedWattage){
@@ -172,6 +174,13 @@ public class Main {
 	        	        
 	        	        		
 	        	       	for(int q = 0; q < affectedLocations.size(); q++) {
+	        	       		
+	        	       		if (affectedLocations.get(0).equals(" ")) {
+		        	       		affectedLocations.remove(0);
+
+	        	       		}
+	        	       		
+	        	       		
 	        	        	if (affectedLocations.indexOf(applianceList.get(k).getLocationID()) == -1) {
 	        	        		
 	        	        			affectedLocations.add(applianceList.get(k).getLocationID());
@@ -215,6 +224,11 @@ public class Main {
 	
 		            
 		            brownCount++;
+		            
+		            if (affectedLocations.get(0).equals(" ")) {
+		            	affectedLocations.remove(0);
+		            }
+		            
 		            if (affectedLocations.indexOf(locArray.get(i).getlocID()) == -1) {
 		            	affectedLocations.add(locArray.get(i).getlocID());
 		            	
@@ -244,15 +258,30 @@ public class Main {
 	        
 	        System.out.println("Total browned out locations: " + brownCount);
 	        
+	        // System.out.println("Total effected locations: " + uniqueLocationsAffected);
+
+	        
+	        
+	        if (lowCount == 0 && brownCount == 0) {
+	        	uniqueLocationsAffected = 0;
+	        }
 	        
 	        
 	        summaryReport(uniqueLocationsAffected, t);
 	        
 	        
 	        
-	        System.out.println("Total effected locations: " + uniqueLocationsAffected);
 	        
 	        System.out.println();
+	        
+	        
+	        for (int i = 0; i < affectedLocations.size(); i++) {
+	        	System.out.println("Affected Array: " + affectedLocations.get(i));
+	        }
+	        
+	        
+	        
+	        
         
         }
         
