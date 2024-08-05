@@ -14,13 +14,14 @@ public class Appliance{
     private boolean isOn = false;
     private boolean isLow = false;
     
-    public Appliance(String locID, String description, int onWatt, double probOn, boolean isSmart, double percentPowerReduction) {
+    public Appliance(String locID, String description, int onWatt, double probOn, boolean isSmart, double percentPowerReduction, String appID) {
     	locationID = locID;
     	this.description = description; 
     	onWattage = onWatt;
     	probabilityOn = probOn; 
     	this.isSmart = isSmart;
-    	powerReductionPercentage = percentPowerReduction; 
+    	powerReductionPercentage = percentPowerReduction;
+    	this.applianceID = appID;
     	
     	
     }
@@ -37,6 +38,10 @@ public class Appliance{
     }
     public double getPercentPowerReduction() {
     	return this.powerReductionPercentage;
+    }
+    
+    public String getAppID() {
+    	return this.applianceID;
     }
     
     

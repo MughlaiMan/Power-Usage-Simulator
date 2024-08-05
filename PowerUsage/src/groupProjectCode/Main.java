@@ -3,9 +3,13 @@ package groupProjectCode;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 
 
@@ -19,13 +23,36 @@ import java.util.Comparator;
 
 public class Main {
 
-    public static void main(String[] args) {
+	
+	
+	
+	public static String generateAppID(ArrayList<String> applianceID) {
+		Random rand = new Random();
+        
+        
+        
+        int genNum = rand.nextInt(1000000);
+        
+        while(applianceID.indexOf(String.valueOf(genNum)) != -1) {
+        	
+        	genNum = rand.nextInt(1000000);
+        	
+        }
+        
+        return String.valueOf(genNum);
+	}
+	
+	
+	
+	
+	
+    public static void main(String[] args) throws IOException {
     
-    	
     	int lowCount = 0;
     	int brownCount = 0;
     	
         ArrayList<String> effectedArray = new ArrayList<>();
+        
 
     	
         Scanner scnr = new Scanner(System.in);
@@ -42,18 +69,16 @@ public class Main {
         
         
         
-        
-        
-        // Timestep Algorithm Part 1: 
-        // 
-        
-        
-        
+        // Takes appliances from input file
         ArrayList<Appliance> applianceList = new ArrayList<>();
+        
+        ArrayList<String> applianceID = new ArrayList<>();
         
         try{
         	File file = new File(nameInputFile);
             Scanner inputFile = new Scanner(file);
+            
+            
             
             
             // add option for user to make changes 
@@ -70,8 +95,13 @@ public class Main {
                 
                 
                 
+            	applianceID.add(generateAppID(applianceID));
+
                 
-                Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction);
+                
+                
+                
+                Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction, generateAppID(applianceID));
                 currentAppliance.setOnStatus(); 
                 applianceList.add(currentAppliance);
             }
@@ -80,6 +110,75 @@ public class Main {
         catch (FileNotFoundException e){
             e.printStackTrace();
         }
+        
+        
+        boolean whileLoop = true;
+        
+        
+        String menuInput = "";
+        
+        
+        
+        while (!menuInput.equals("S")) {
+        	 
+        	 
+        	 System.out.println("Select an option:");
+             System.out.println("Type 'A' Add an appliance");
+             System.out.println("Type 'D' Delete an appliance");
+             System.out.println("Type 'L' List the appliances");
+             System.out.println("Type 'F' Read Appliances from a file");
+             System.out.println("Type 'S' To Start the simulation");
+             System.out.println("Type 'Q' Quit the program");
+             
+             
+             menuInput = scnr.next();
+             
+             
+             
+             
+             
+             if(menuInput.equals("A")) {
+            	
+                
+                 System.out.println("Enter the location ID:");
+                 String locationID = scnr.next();
+
+                 
+                 System.out.println("Enter the appliance description:");
+                 String desc = scnr.next();
+                 
+                 
+                 System.out.println("Enter the wattage used by the appliance when its on:");
+                 int onWattage = scnr.nextInt();
+                 
+                 System.out.println("Enter the probability that the appliance is on:");
+                 double probOn = scnr.nextDouble();
+                 
+                 System.out.println("Is the appliance smart or not(Enter true or false):");
+                 boolean isSmart = scnr.nextBoolean();
+                 
+                 
+                 System.out.println("Enter the percentage of power reduction(Enter a decimal value between 0 and 1):");
+                 double percentPowerRed = scnr.nextDouble();
+                 
+                 
+                 applianceList.add(new Appliance(locationID, desc, onWattage, probOn, isSmart, percentPowerRed, generateAppID(applianceID)));
+                 
+             }
+             
+        }
+        
+        
+        
+        
+        
+        
+        // Timestep Algorithm Part 1: 
+        // 
+        
+        
+        
+ 
         
         // Sort appliances in descending order 
         Collections.sort(applianceList, new Comparator<Appliance>(){
@@ -116,7 +215,9 @@ public class Main {
 								        					applianceList.get(k).getOnWattage(),
 								        					applianceList.get(k).getOnProbability(), 
 								        					applianceList.get(k).getSmartStatus(), 
-								        					applianceList.get(k).getPercentPowerReduction());
+								        					applianceList.get(k).getPercentPowerReduction(),
+								        					applianceList.get(k).getAppID());
+        													
 					lowAppliance.setLowStatus();			        			
         			
         			applianceList.set(k,lowAppliance);
@@ -199,10 +300,11 @@ public class Main {
 	        	}
 	        });
 	        
-	        
+	        /*
 	        for (int i = 0; i < locArray.size(); i++) {
 	        	System.out.println(locArray.get(i).getlocID() + ": " + locArray.get(i).getNumApp());
 	        }
+	        */
 	        
 	        System.out.println();
 	        
@@ -222,7 +324,8 @@ public class Main {
 	        					applianceList.get(j).getOnWattage(),
 	        					applianceList.get(j).getOnProbability(), 
 	        					applianceList.get(j).getSmartStatus(), 
-	        					applianceList.get(j).getPercentPowerReduction());
+	        					applianceList.get(j).getPercentPowerReduction(),
+	        					applianceList.get(j).getAppID());
 	        					brownApp.setOnStatus(false); 			        			
 	        					applianceList.set(j,brownApp);
 	        		}
@@ -297,7 +400,7 @@ public class Main {
         
         int uniqueLoc = locationArray.size();
         
-        summaryReport += "Total number of locations affected in timestep " + t + ": " + uniqueLoc + ":\n";
+        // summaryReport += "Total number of locations affected in timestep " + t + ": " + uniqueLoc + ":\n";
         
         
         
@@ -309,7 +412,16 @@ public class Main {
         
         
         
+        for (int i = 0; i < applianceList.size(); i++) {
+        	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnWattage() + " " + applianceList.get(i).getAppID());
+        }
+        
+        
+        
+        
        
+      
+        
         
         
         // for testing
@@ -341,6 +453,31 @@ public class Main {
         */
         
 
-    } // end of main 
+    } // end of main
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 } // end of PowerGrid SimulationClass
