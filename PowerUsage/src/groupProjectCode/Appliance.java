@@ -12,9 +12,8 @@ public class Appliance{
     private String description;
     private boolean isSmart; 
     private boolean isOn = false;
-    private boolean isLow = false;
     
-    public Appliance(String locID, String description, int onWatt, double probOn, boolean isSmart, double percentPowerReduction, String appID) {
+    public Appliance(String locID, String description, int onWatt, double probOn, boolean isSmart, double percentPowerReduction, String appID, boolean onStatus) {
     	locationID = locID;
     	this.description = description; 
     	onWattage = onWatt;
@@ -23,8 +22,14 @@ public class Appliance{
     	powerReductionPercentage = percentPowerReduction;
     	this.applianceID = appID;
     	
+    	this.isOn = onStatus;
     	
     }
+    
+    
+    
+    
+    
     
     public String getLocationID() {
     	return locationID;

@@ -1,0 +1,14 @@
+10000063,Laptop,75,0.25,true,0.5
+10000063,Stereo,75,0.25,false,0.0
+10000063,Fan,200,0.1,false,0.0
+10000063,Electric Frying Pan,1500,0.01,false,0.0
+10000063,Refrigerator - Freezer 24 cu. ft. - Frostfree,653,1.0,true,0.25
+10000063,Stereo,75,0.25,false,0.0
+10000063,Television Plasma 42' - 50',375,0.167,false,0.0
+10000064,Television - 32 inch,130,0.167,false,0.0
+10000064,Toaster Oven,1500,0.05,false,0.0
+10000064,PS5 - 17 cu. ft - Frostfree,463,1.0,true,0.25
+10000064,XBox Series X - Freezer 21 cu. ft.- Side by Side,783,1.0,true,0.25
+10000064,Laptop - 14 cu. ft.,226,1.0,true,0.25
+10000064,Refrigerator - 14 cu. ft. - Frostfree,383,1.0,true,0.25
+10000064,Lighting - Fluorescent 2 bulb,100,0.33,false,0.0

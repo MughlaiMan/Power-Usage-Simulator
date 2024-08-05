@@ -23,7 +23,8 @@ import java.util.Random;
 
 public class Main {
 
-	
+	public static String summary_Report = "";
+
 	
 	
 	public static String generateAppID(ArrayList<String> applianceID) {
@@ -48,12 +49,9 @@ public class Main {
 	
     public static void main(String[] args) throws IOException {
     
+    	
     	int lowCount = 0;
     	int brownCount = 0;
-    	
-        ArrayList<String> effectedArray = new ArrayList<>();
-        
-
     	
         Scanner scnr = new Scanner(System.in);
         System.out.println("Enter the total allowed wattage.");
@@ -101,7 +99,7 @@ public class Main {
                 
                 
                 
-                Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction, generateAppID(applianceID));
+                Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction, generateAppID(applianceID), false);
                 currentAppliance.setOnStatus(); 
                 applianceList.add(currentAppliance);
             }
@@ -112,14 +110,14 @@ public class Main {
         }
         
         
-        boolean whileLoop = true;
+     
         
         
         String menuInput = "";
         
         
         
-        while (!menuInput.equals("S")) {
+        while (!menuInput.equalsIgnoreCase("S")) {
         	 
         	 
         	 System.out.println("Select an option:");
@@ -134,6 +132,105 @@ public class Main {
              menuInput = scnr.next();
              
              
+             
+             if(menuInput.equals("Q")) {
+            	 System.exit(0);
+             }
+            	
+             
+             
+             
+             if (menuInput.equals("F")){
+
+
+            	 try{  
+            		 
+            		 System.out.println("Enter the name of the file:");
+            	  
+            	             String userFileName = scnr.next();
+            	             File file = new File(userFileName);
+            	             Scanner inputFile = new Scanner(file);
+
+
+
+
+
+            	             while(inputFile.hasNextLine()){
+            	                 String currentLine = inputFile.nextLine();
+            	                 String[] applianceInfo = currentLine.split(",");
+            	                 String locationID = applianceInfo[0];
+            	                 String description = applianceInfo[1];
+            	                 int onWatt = Integer.parseInt(applianceInfo[2]);
+            	                 double probabilityOn = Double.parseDouble(applianceInfo[3]);
+            	                 boolean isSmart = Boolean.parseBoolean(applianceInfo[4]);
+            	                 double percentPowerReduction = Double.parseDouble(applianceInfo[5]);
+
+
+
+            	                 applianceID.add(generateAppID(applianceID));
+
+
+
+
+
+            	                 Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction, generateAppID(applianceID), false);
+            	                 currentAppliance.setOnStatus(); 
+            	                 applianceList.add(currentAppliance);
+            	             }
+            	         }
+
+            	         catch (FileNotFoundException e){
+            	             e.printStackTrace();
+            	         }
+            	 } 
+
+             
+             
+             
+             
+             
+             
+             
+             if (menuInput.equals("D")) {
+            	 
+            	 
+            	 System.out.println("Enter the appliance ID:");
+                 String delApp = scnr.next();
+                 
+                 for (int i = 0; i < applianceList.size(); i++) {
+                	 if (applianceList.get(i).getAppID().equals(delApp)) {
+                		 applianceList.remove(i);
+                		 break;
+                	 }
+                 }
+
+            	 
+            	 
+             }
+             
+             
+             if (menuInput.equals("L")) {
+            	 for (int i = 0; i < applianceList.size(); i++) {
+            		 
+            		 System.out.println("Location ID: " 
+            		 + applianceList.get(i).getLocationID()
+            		 + ", "
+            		 + applianceList.get(i).getDescription()
+            		 + ", On Wattage: "
+            		 + applianceList.get(i).getOnWattage()
+            		 + ", Probability of Being On "
+            		 + applianceList.get(i).getOnProbability()
+            		 + ", Is Smart?: "
+            		 + applianceList.get(i).getSmartStatus()
+            		 + ", Percent Power Reduction "
+            		 + applianceList.get(i).getPercentPowerReduction()
+            		 + ", Appliance ID: "
+            		 + applianceList.get(i).getAppID()
+            		);
+            		 
+            		 
+            	 }
+             }
              
              
              
@@ -162,11 +259,11 @@ public class Main {
                  double percentPowerRed = scnr.nextDouble();
                  
                  
-                 applianceList.add(new Appliance(locationID, desc, onWattage, probOn, isSmart, percentPowerRed, generateAppID(applianceID)));
+                 applianceList.add(new Appliance(locationID, desc, onWattage, probOn, isSmart, percentPowerRed, generateAppID(applianceID), false));
                  
              }
              
-        }
+        } // end of while loop
         
         
         
@@ -179,243 +276,290 @@ public class Main {
         
         
  
-        
-        // Sort appliances in descending order 
-        Collections.sort(applianceList, new Comparator<Appliance>(){
-        	public int compare(Appliance a1, Appliance a2) {
-        		return Integer.valueOf(a2.onWattage).compareTo(a1.onWattage);
-        	}
-        });
-        
-        int totalPowerConsumption = 0;
-        for (int j = 0; j < applianceList.size(); j++) {
-        	if (applianceList.get(j).getOnStatus()) {
-        		totalPowerConsumption += applianceList.get(j).getOnWattage();
-        	}
+        for (int t = 1; t < timeSteps + 1; t++) {
         	
-        }
-        //test
-        /*
-        for (int a = 0; a < 5; a++ ) {
-        	System.out.print(applianceList.get(a).getSmartStatus() + " ");
-        	System.out.println(applianceList.get(a).getOnWattage());
-        }
-        */
-        
-        
-
-        // setting smart appliances to low if allowed wattage is exceeded
-        if (totalPowerConsumption > totalAllowedWattage){
         	for(int k = 0; k < applianceList.size(); k++) {
         		
         		
         		if (applianceList.get(k).getSmartStatus()) {
-        			Appliance lowAppliance = new Appliance(applianceList.get(k).getLocationID(),
+        			Appliance timestepAppliance = new Appliance(applianceList.get(k).getLocationID(),
 								        					applianceList.get(k).getDescription(),
 								        					applianceList.get(k).getOnWattage(),
 								        					applianceList.get(k).getOnProbability(), 
 								        					applianceList.get(k).getSmartStatus(), 
 								        					applianceList.get(k).getPercentPowerReduction(),
-								        					applianceList.get(k).getAppID());
+								        					applianceList.get(k).getAppID(),
+        													applianceList.get(k).getOnStatus());
         													
-					lowAppliance.setLowStatus();			        			
+					timestepAppliance.setOnStatus();			        			
         			
-        			applianceList.set(k,lowAppliance);
+        			applianceList.set(k,timestepAppliance);
         			
-        			lowCount++;
         			
-        		}
-        		if(totalPowerConsumption <= totalAllowedWattage) {
-        			break;
         		}
         	}
-        }
-        
-        // brown out if total allowed wattage is still exceeded
         
         
-
         
-        if (totalPowerConsumption > totalAllowedWattage) {
-        	
-        	
-        	
-        	
+	        // Sort appliances in descending order 
+	        Collections.sort(applianceList, new Comparator<Appliance>(){
+	        	public int compare(Appliance a1, Appliance a2) {
+	        		return Integer.valueOf(a2.onWattage).compareTo(a1.onWattage);
+	        	}
+	        });
 	        
+	        
+	        //printStuff(applianceList);
+	        
+	        int totalPowerConsumption = 0;
+	        for (int j = 0; j < applianceList.size(); j++) {
+	        	if (applianceList.get(j).getOnStatus()) {
+	        		totalPowerConsumption += applianceList.get(j).getOnWattage();
+	        	}
+	        	
+	        }
+	        //test
 	        /*
-	        //test after
-	        System.out.println("\nAfter");
 	        for (int a = 0; a < 5; a++ ) {
 	        	System.out.print(applianceList.get(a).getSmartStatus() + " ");
 	        	System.out.println(applianceList.get(a).getOnWattage());
 	        }
 	        */
 	        
-	        // Counting appliances in each location 
-	        // index of locationList will be match the index of its Location counter in Location counterlist
-	        ArrayList<Integer> locationCounterList = new ArrayList<>(); // number of appliances in each location 
-	        ArrayList<String> locationList = new ArrayList<>(); // this list has the total unique locations
 	        
-	        for(int i = 0; i < applianceList.size(); i++) {
-	        	String location = applianceList.get(i).getLocationID();
-	        	if (locationList.indexOf(location) != -1) { // if the location has already been counted we will skip to 
-	        												// the next iteration
-	        		continue;
-	        	}
-	        	locationList.add(location); // adds location string to locationList to ensure we do not count the same location
-	        	int locationCounter = 1; // first instance of location id
-	        	
-	        	for (int j = 0; j < applianceList.size(); j++) {
-	        		if (j != i) {
-	        			if (applianceList.get(j).getLocationID().equals(location)) {
-	        				locationCounter++;
-	        			}
-	        		}
+	        lowCount = 0;
+	        
+	
+	        // setting smart appliances to low if allowed wattage is exceeded
+	        if (totalPowerConsumption > totalAllowedWattage){
+	        	for(int k = 0; k < applianceList.size(); k++) {
 	        		
+	        		
+	        		if (applianceList.get(k).getSmartStatus()) {
+	        			Appliance lowAppliance = new Appliance(applianceList.get(k).getLocationID(),
+									        					applianceList.get(k).getDescription(),
+									        					applianceList.get(k).getOnWattage(),
+									        					applianceList.get(k).getOnProbability(), 
+									        					applianceList.get(k).getSmartStatus(), 
+									        					applianceList.get(k).getPercentPowerReduction(),
+									        					applianceList.get(k).getAppID(),
+									        					applianceList.get(k).getOnStatus());
+	        													
+						lowAppliance.setLowStatus();			        			
+	        			
+	        			applianceList.set(k,lowAppliance);
+	        			
+	        			lowCount++;
+	        			
+	        		}
+	        		if(totalPowerConsumption <= totalAllowedWattage) {
+	        			break;
+	        		}
 	        	}
-	        	
-	        	locationCounterList.add(Integer.valueOf(locationCounter));
 	        }
 	        
-	        /*
-	        for (int a = 0; a <10 ; a++) {
-	        	System.out.println(locationList.get(a) + ": "+ locationCounterList.get(a));
-	        }
-	        */
+	        // brown out if total allowed wattage is still exceeded
 	        
-	        System.out.println();
 	        
 	        ArrayList<location> locArray = new ArrayList<>();
-	
+	        ArrayList<String> effectedArray = new ArrayList<>();
 	        
-	        for (int i = 0; i < locationList.size(); i++) {
-	        	location loc = new location(locationList.get(i), locationCounterList.get(i));
-	        	locArray.add(loc);
-	        }
-	        
-	        
-	        Collections.sort(locArray, new Comparator<location>(){
-	        	public int compare(location a1, location a2) {
-	        		return Integer.valueOf(a1.numApp).compareTo(a2.numApp);
-	        	}
-	        });
-	        
-	        /*
-	        for (int i = 0; i < locArray.size(); i++) {
-	        	System.out.println(locArray.get(i).getlocID() + ": " + locArray.get(i).getNumApp());
-	        }
-	        */
-	        
-	        System.out.println();
-	        
-	        totalPowerConsumption = 0;
-	        
-	        
-	        
-	        
-	        
-	        for (int i = 0; i < locArray.size(); i++) {
-	        	
-	        	for (int j = 0; j < applianceList.size(); j++) {
-	        		
-	        		if(applianceList.get(j).getLocationID().equals(locArray.get(i).getlocID())) {
-	        			Appliance brownApp = new Appliance(applianceList.get(j).getLocationID(),
-	        					applianceList.get(j).getDescription(),
-	        					applianceList.get(j).getOnWattage(),
-	        					applianceList.get(j).getOnProbability(), 
-	        					applianceList.get(j).getSmartStatus(), 
-	        					applianceList.get(j).getPercentPowerReduction(),
-	        					applianceList.get(j).getAppID());
-	        					brownApp.setOnStatus(false); 			        			
-	        					applianceList.set(j,brownApp);
-	        		}
-	        		
-	        		
-	        	}
+	        if (totalPowerConsumption > totalAllowedWattage) {
 	        	
 	        	
 	        	
-	            for (int j = 0; j < applianceList.size(); j++) {
-	            	if (applianceList.get(j).getOnStatus()) {
-	            		totalPowerConsumption += applianceList.get(j).getOnWattage();
-	            	}
-	            	
-	            }
-	            
-	            brownCount++;
-	            
-	            effectedArray.add(locArray.get(i).getlocID());
-	            
-	            
-	            if(totalPowerConsumption <= totalAllowedWattage) {
-	    			break;
-	    		}
-	           
-	            
-	        }
+	        	
+		        
+		        /*
+		        //test after
+		        System.out.println("\nAfter");
+		        for (int a = 0; a < 5; a++ ) {
+		        	System.out.print(applianceList.get(a).getSmartStatus() + " ");
+		        	System.out.println(applianceList.get(a).getOnWattage());
+		        }
+		        */
+		        
+		        // Counting appliances in each location 
+		        // index of locationList will be match the index of its Location counter in Location counterlist
+		        ArrayList<Integer> locationCounterList = new ArrayList<>(); // number of appliances in each location 
+		        ArrayList<String> locationList = new ArrayList<>(); // this list has the total unique locations
+		        
+		        for(int i = 0; i < applianceList.size(); i++) {
+		        	String location = applianceList.get(i).getLocationID();
+		        	if (locationList.indexOf(location) != -1) { // if the location has already been counted we will skip to 
+		        												// the next iteration
+		        		continue;
+		        	}
+		        	locationList.add(location); // adds location string to locationList to ensure we do not count the same location
+		        	int locationCounter = 1; // first instance of location id
+		        	
+		        	for (int j = 0; j < applianceList.size(); j++) {
+		        		if (j != i) {
+		        			if (applianceList.get(j).getLocationID().equals(location)) {
+		        				locationCounter++;
+		        			}
+		        		}
+		        		
+		        	}
+		        	
+		        	locationCounterList.add(Integer.valueOf(locationCounter));
+		        }
+		        
+		        /*
+		        for (int a = 0; a <10 ; a++) {
+		        	System.out.println(locationList.get(a) + ": "+ locationCounterList.get(a));
+		        }
+		        */
+		        
+		        System.out.println();
+		        
+		        
+
+		
+		        
+		        for (int i = 0; i < locationList.size(); i++) {
+		        	location loc = new location(locationList.get(i), locationCounterList.get(i));
+		        	locArray.add(loc);
+		        }
+		        
+		        
+		        Collections.sort(locArray, new Comparator<location>(){
+		        	public int compare(location a1, location a2) {
+		        		return Integer.valueOf(a1.numApp).compareTo(a2.numApp);
+		        	}
+		        });
+		        
+		        /*
+		        for (int i = 0; i < locArray.size(); i++) {
+		        	System.out.println(locArray.get(i).getlocID() + ": " + locArray.get(i).getNumApp());
+		        }
+		        */
+		        
+		        System.out.println();
+		        
+		        totalPowerConsumption = 0;
+		        
+		        
+		        
+		        brownCount = 0;
+		        
+		        
+		        for (int i = 0; i < locArray.size(); i++) {
+		        	
+		        	for (int j = 0; j < applianceList.size(); j++) {
+		        		
+		        		if(applianceList.get(j).getLocationID().equals(locArray.get(i).getlocID())) {
+		        			Appliance brownApp = new Appliance(applianceList.get(j).getLocationID(),
+		        					applianceList.get(j).getDescription(),
+		        					applianceList.get(j).getOnWattage(),
+		        					applianceList.get(j).getOnProbability(), 
+		        					applianceList.get(j).getSmartStatus(), 
+		        					applianceList.get(j).getPercentPowerReduction(),
+		        					applianceList.get(j).getAppID(),
+		        					applianceList.get(i).getOnStatus());
+		        					brownApp.setOnStatus(false); 			        			
+		        					applianceList.set(j,brownApp);
+		        		}
+		        		
+		        		
+		        	}
+		        	
+		        	
+		        	
+		            for (int j = 0; j < applianceList.size(); j++) {
+		            	if (applianceList.get(j).getOnStatus()) {
+		            		totalPowerConsumption += applianceList.get(j).getOnWattage();
+		            	}
+		            	
+		            }
+		            
+		            brownCount++;
+		            
+		            effectedArray.add(locArray.get(i).getlocID());
+		            
+		            
+		            if(totalPowerConsumption <= totalAllowedWattage) {
+		    			break;
+		    		}
+		           
+		            
+		        }
+		        
+		        
+		        
+		        /*
+		        for (int i = 0; i < locArray.size(); i++) {
+		        	System.out.println(locArray.get(i).getlocID() + ": " + locArray.get(i).getNumApp());
+		        }
+		        
+		        for (int i = 0; i < applianceList.size(); i++) {
+		        	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnStatus());
+		        }
+		        */
+	        
+	        } // end of brown if statement
+	        
+	     
 	        
 	        
 	        
-	        /*
-	        for (int i = 0; i < locArray.size(); i++) {
-	        	System.out.println(locArray.get(i).getlocID() + ": " + locArray.get(i).getNumApp());
-	        }
+	        int smartAppCounter = 0;
 	        
 	        for (int i = 0; i < applianceList.size(); i++) {
-	        	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnStatus());
+	        	if (applianceList.get(i).getSmartStatus()) {
+	        		smartAppCounter++;
+	        		effectedArray.add(applianceList.get(i).getLocationID());
+	        	}
 	        }
-	        */
+	        
+	        
+	        
+		    ArrayList <String> locationArray = new ArrayList<>();
+	
+	        
+	        for (int i = 0; i < effectedArray.size(); i++) {
+		         
+		         for (int j = i + 1; j < effectedArray.size(); j++) {
+		             if (effectedArray.get(j).equals(effectedArray.get(i))) {
+		                 effectedArray.remove(j);
+		             }
+		         }
+	
+		         locationArray.add(effectedArray.get(i));
+		         //System.out.println(locationArray.get(i));
+		     }
+	        
+	        int uniqueLoc = locationArray.size();
+	        
+	        
+	        System.out.println("Timestep " + t + " Report");
+	        
+	        System.out.println("Total appliances set to low: " + lowCount);
+	        
+	        System.out.println("Total browned out locations: " + brownCount);
+	        
+	        
+	        System.out.println("After: ");
+	        //printStuff(applianceList);
+	        
+	        summaryReport(uniqueLoc, t);
+	        
+	        
+	        
+	        System.out.println("Total effected locations: " + uniqueLoc);
+	        
+	        System.out.println();
         
-        } // end of brown if statement
-        
-     
-        
-        
-        
-        int smartAppCounter = 0;
-        
-        for (int i = 0; i < applianceList.size(); i++) {
-        	if (applianceList.get(i).getSmartStatus()) {
-        		smartAppCounter++;
-        		effectedArray.add(applianceList.get(i).getLocationID());
-        	}
         }
         
+        System.out.println(summary_Report);
         
         
-	    ArrayList <String> locationArray = new ArrayList<>();
-
-        
-        for (int i = 0; i < effectedArray.size(); i++) {
-	         
-	         for (int j = i + 1; j < effectedArray.size(); j++) {
-	             if (effectedArray.get(j).equals(effectedArray.get(i))) {
-	                 effectedArray.remove(j);
-	             }
-	         }
-
-	         locationArray.add(effectedArray.get(i));
-	         //System.out.println(locationArray.get(i));
-	     }
-        
-        int uniqueLoc = locationArray.size();
-        
-        // summaryReport += "Total number of locations affected in timestep " + t + ": " + uniqueLoc + ":\n";
-        
-        
-        
-        System.out.println("Total appliances set to low: " + lowCount);
-        
-        System.out.println("Total browned out locations: " + brownCount);
-        
-        System.out.println("Total effected locations: " + uniqueLoc);
-        
-        
-        
+        /*
         for (int i = 0; i < applianceList.size(); i++) {
         	System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getOnWattage() + " " + applianceList.get(i).getAppID());
         }
-        
+        */
         
         
         
@@ -456,6 +600,17 @@ public class Main {
     } // end of main
     
     
+    
+    public static void summaryReport(int uniqueLocations, int timeStep) {
+    	
+    	summary_Report += "TimeStep " + timeStep + ": " + "Total number of locations affected is " + uniqueLocations + "\n";
+    }
+    
+    public static void printStuff(ArrayList<Appliance> applianceList) {
+    	for (int i = 0; i < applianceList.size(); i++ ) {
+    		System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getDescription() + " " + applianceList.get(i).getOnWattage());
+    	}
+    }
     
     
     
