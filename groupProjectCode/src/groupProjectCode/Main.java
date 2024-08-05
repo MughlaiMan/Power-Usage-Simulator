@@ -1,0 +1,455 @@
+package groupProjectCode;
+
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
+
+public class Main {
+
+	public static String summary_Report = "";
+
+	
+    public static void main(String[] args) throws IOException {
+        ArrayList<Appliance> applianceList = new ArrayList<>();
+        ArrayList<String> applianceID = new ArrayList<>();
+    	
+    	int lowCount = 0;
+    	int brownCount = 0;
+    	
+        Scanner scnr = new Scanner(System.in);
+        System.out.println("Enter the total allowed wattage.");
+        // add input validation
+        int totalAllowedWattage = scnr.nextInt();
+        // add input validation
+        System.out.println("Enter the amount of timesteps.");
+        int timeSteps = scnr.nextInt();
+        
+        System.out.println("Enter the name of the input file");
+
+        String nameInputFile = scnr.next();
+        addAppliancesFromFile(applianceList,applianceID,nameInputFile);
+        
+
+
+        //USER MENU OPTIONS
+        String menuInput = "";
+        
+        while (!menuInput.equalsIgnoreCase("S")) {
+        	 
+        	 
+        	 System.out.println("Select an option:");
+             System.out.println("Type 'A' Add an appliance");
+             System.out.println("Type 'D' Delete an appliance");
+             System.out.println("Type 'L' List the appliances");
+             System.out.println("Type 'F' Read Appliances from a file");
+             System.out.println("Type 'S' To Start the simulation");
+             System.out.println("Type 'Q' Quit the program");
+             
+             
+             menuInput = scnr.next();
+             
+             if(menuInput.equalsIgnoreCase("A")) {
+             	
+                 
+                 System.out.println("Enter the location ID:");
+                 String locationID = scnr.next();
+
+                 
+                 System.out.println("Enter the appliance description:");
+                 String desc = scnr.next();
+                 
+                 
+                 System.out.println("Enter the wattage used by the appliance when its on:");
+                 int onWattage = scnr.nextInt();
+                 
+                 System.out.println("Enter the probability that the appliance is on:");
+                 double probOn = scnr.nextDouble();
+                 
+                 System.out.println("Is the appliance smart or not(Enter true or false):");
+                 boolean isSmart = scnr.nextBoolean();
+                 
+                 
+                 System.out.println("Enter the percentage of power reduction(Enter a decimal value between 0 and 1):");
+                 double percentPowerRed = scnr.nextDouble();
+                 
+                 
+                 applianceList.add(new Appliance(locationID, desc, onWattage, probOn, isSmart, percentPowerRed, generateAppID(applianceID), false));
+                 
+             }
+             
+             if (menuInput.equalsIgnoreCase("D")) {
+            	 
+            	 
+            	 System.out.println("Enter the appliance ID:");
+                 String delApp = scnr.next();
+                 
+                 for (int i = 0; i < applianceList.size(); i++) {
+                	 if (applianceList.get(i).getAppID().equals(delApp)) {
+                		 applianceList.remove(i);
+                		 break;
+                	 }
+                 }
+             }
+             
+             if (menuInput.equalsIgnoreCase("L")) {
+            	 for (int i = 0; i < applianceList.size(); i++) {
+            		 
+            		 System.out.println( 
+            		 applianceList.get(i).getLocationID()
+            		 + ","
+            		 + applianceList.get(i).getDescription()
+            		 + ","
+            		 + applianceList.get(i).getOnWattage()
+            		 + ","
+            		 + applianceList.get(i).getOnProbability()
+            		 + ","
+            		 + applianceList.get(i).getSmartStatus()
+            		 + ","
+            		 + applianceList.get(i).getPercentPowerReduction()
+            		 + ",APPLIANCE ID: "
+            		 + applianceList.get(i).getAppID()
+            		);
+            		 
+            		 
+            	 }
+             }
+             
+             if (menuInput.equalsIgnoreCase("F")){//Read and add appliances from File
+        		 
+        		 System.out.println("Enter the name of the file:");
+        		 String userFileName = scnr.next();
+        		 addAppliancesFromFile (applianceList, applianceID, userFileName);
+        	             
+        	 } 
+
+             if(menuInput.equalsIgnoreCase("Q")) { //Quit Program
+            	 System.exit(0);
+             }
+             
+
+             
+        } // end of menu while loop
+  
+        
+        
+        // TIMESTEP LOOP
+        for (int t = 1; t < timeSteps + 1; t++) {
+        	
+        	// Using on probability to decide if a device will be on each timestep
+        	applianceOnOrOff(applianceList);
+        
+	        // Sort appliances in descending order based off wattage used when ON
+	        Collections.sort(applianceList, new Comparator<Appliance>(){
+	        	public int compare(Appliance a1, Appliance a2) {
+	        		return Integer.valueOf(a2.onWattage).compareTo(a1.onWattage);
+	        	}
+	        });
+	        
+	        System.out.println("BEFORE SETTING TO LOW");
+	        printApplianceDetail(applianceList);
+	        
+	        System.out.println();
+	        
+	        lowCount = 0;
+	        ArrayList<String> affectedLocations = new ArrayList<>();
+	        
+	        // setting smart appliances to low if allowed wattage is exceeded
+	        if (calcTotalPowerUsage(applianceList) > totalAllowedWattage){
+	        	for(int k = 0; k < applianceList.size(); k++) {
+	        		
+	        		
+	        		if (applianceList.get(k).getSmartStatus() && applianceList.get(k).getOnStatus()) {
+	        			applianceToLow(applianceList, k);
+	        			
+	        			lowCount++;
+	        	        
+	        	        		
+	        	       	for(int q = 0; q < affectedLocations.size(); q++) {
+	        	        	if (affectedLocations.indexOf(applianceList.get(k).getLocationID()) == -1) {
+	        	        		
+	        	        			affectedLocations.add(applianceList.get(k).getLocationID());
+	        	        	}
+	        	        }
+	        	        	
+	        	        
+	                
+	        			
+	        		}
+	        		if(calcTotalPowerUsage(applianceList) <= totalAllowedWattage) {
+	        			break;
+	        		}
+	        	}
+	        }
+	        
+
+	        // brown out if total allowed wattage is still exceeded
+	        
+	        
+	        ArrayList<Location> locArray = new ArrayList<>();
+	        
+	        
+	        if (calcTotalPowerUsage(applianceList) > totalAllowedWattage) {
+	        	
+	        	appliancesPerLocation(applianceList, locArray);// counts appliances per location and sorts locations in ascending order
+	
+		        
+		        brownCount = 0;
+		        
+		        
+		        for (int i = 0; i < locArray.size(); i++) {
+		        	
+		        	for (int j = 0; j < applianceList.size(); j++) {
+		        		
+		        		if(applianceList.get(j).getLocationID().equals(locArray.get(i).getlocID())) {
+		        			brownOutAppliance(applianceList,i);
+		        		}
+		        		
+		        	}
+	
+		            
+		            brownCount++;
+		            if (affectedLocations.indexOf(locArray.get(i).getlocID()) == -1) {
+		            	affectedLocations.add(locArray.get(i).getlocID());
+		            	
+		            }
+		            
+		            
+		            
+		            if(calcTotalPowerUsage(applianceList) <= totalAllowedWattage) {
+		    			break;
+		    		}
+
+		        }
+  
+	        } // end of brown out if statement
+	   
+	        System.out.println("AFTER SETTING TO LOW");
+	        printApplianceDetail(applianceList);
+	        
+
+
+	        int uniqueLocationsAffected = affectedLocations.size();
+	        
+	        
+	        System.out.println("Timestep " + t + " Report");
+	        
+	        System.out.println("Total appliances set to low: " + lowCount);
+	        
+	        System.out.println("Total browned out locations: " + brownCount);
+	        
+	        
+	        
+	        summaryReport(uniqueLocationsAffected, t);
+	        
+	        
+	        
+	        System.out.println("Total effected locations: " + uniqueLocationsAffected);
+	        
+	        System.out.println();
+        
+        }
+        
+       System.out.println(summary_Report);
+ 
+
+    } // end of main
+    
+    
+    public static String generateAppID(ArrayList<String> applianceID) {
+		Random rand = new Random();
+        int genNum = rand.nextInt(1000000);
+        
+        while(applianceID.indexOf(String.valueOf(genNum)) != -1) { // checks if appliance ID exists before assigning
+        	
+        	genNum = rand.nextInt(1000000);
+        	
+        }
+        applianceID.add(String.valueOf(genNum));
+        return String.valueOf(genNum);
+	}
+	
+	public static int calcTotalPowerUsage(ArrayList<Appliance> appliances) {
+		int totalPowerConsumption = 0;
+        for (int j = 0; j < appliances.size(); j++) {
+        	if (appliances.get(j).getOnStatus()) {
+        		totalPowerConsumption += appliances.get(j).getOnWattage();
+        	}
+        	
+        }
+        return totalPowerConsumption;
+	}
+	
+	public static void addAppliancesFromFile(ArrayList<Appliance> applianceList, ArrayList<String> applianceID, String userFileName) {
+		try{  
+            File file = new File(userFileName);
+            Scanner inputFile = new Scanner(file);
+
+            while(inputFile.hasNextLine()){
+                String currentLine = inputFile.nextLine();
+                String[] applianceInfo = currentLine.split(",");
+                String locationID = applianceInfo[0];
+                String description = applianceInfo[1];
+                int onWatt = Integer.parseInt(applianceInfo[2]);
+                double probabilityOn = Double.parseDouble(applianceInfo[3]);
+                boolean isSmart = Boolean.parseBoolean(applianceInfo[4]);
+                double percentPowerReduction = Double.parseDouble(applianceInfo[5]);
+
+
+
+                generateAppID(applianceID);
+
+
+
+
+
+                Appliance currentAppliance = new Appliance(locationID, description, onWatt, probabilityOn, isSmart, percentPowerReduction, generateAppID(applianceID), false);
+                currentAppliance.setOnStatus(); 
+                applianceList.add(currentAppliance);
+            }
+            inputFile.close();
+        }
+
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+	}
+	
+	
+	public static void applianceOnOrOff(ArrayList<Appliance> applianceList) {
+    	for(int k = 0; k < applianceList.size(); k++) {
+    		
+    		
+			Appliance timestepAppliance = new Appliance(applianceList.get(k).getLocationID(),
+						        					applianceList.get(k).getDescription(),
+						        					applianceList.get(k).getOnWattage(),
+						        					applianceList.get(k).getOnProbability(), 
+						        					applianceList.get(k).getSmartStatus(), 
+						        					applianceList.get(k).getPercentPowerReduction(),
+						        					applianceList.get(k).getAppID(),
+													applianceList.get(k).getOnStatus());
+													
+			timestepAppliance.setOnStatus();			        			
+			
+			applianceList.set(k,timestepAppliance);
+			
+    	}
+	}
+	
+	public static void applianceToLow(ArrayList<Appliance> applianceList, int indexOfApp) {
+		Appliance lowAppliance = new Appliance(applianceList.get(indexOfApp).getLocationID(),
+				applianceList.get(indexOfApp).getDescription(),
+				applianceList.get(indexOfApp).getOnWattage(),
+				applianceList.get(indexOfApp).getOnProbability(), 
+				applianceList.get(indexOfApp).getSmartStatus(), 
+				applianceList.get(indexOfApp).getPercentPowerReduction(),
+				applianceList.get(indexOfApp).getAppID(),
+				applianceList.get(indexOfApp).getOnStatus());
+				
+				lowAppliance.setLowStatus();			        			
+
+				applianceList.set(indexOfApp,lowAppliance);
+	}
+	
+	public static void brownOutAppliance(ArrayList<Appliance> applianceList, int indexOfApp) {
+	Appliance brownApp = new Appliance(applianceList.get(indexOfApp).getLocationID(),
+			applianceList.get(indexOfApp).getDescription(),
+			applianceList.get(indexOfApp).getOnWattage(),
+			applianceList.get(indexOfApp).getOnProbability(), 
+			applianceList.get(indexOfApp).getSmartStatus(), 
+			applianceList.get(indexOfApp).getPercentPowerReduction(),
+			applianceList.get(indexOfApp).getAppID(),
+			false); 			        			
+			applianceList.set(indexOfApp,brownApp);
+	}
+	
+	
+	public static void appliancesPerLocation(ArrayList<Appliance> applianceList, ArrayList<Location> locArray) {// counts appliances per locations and sorts locations in 
+																													//ascending order based off appliance count
+        ArrayList<Integer> locationCounterList = new ArrayList<>(); // number of appliances in each location 
+        ArrayList<String> locationList = new ArrayList<>(); // this list has the total unique locations
+        
+        for(int i = 0; i < applianceList.size(); i++) {
+        	String location = applianceList.get(i).getLocationID();
+        	if (locationList.indexOf(location) != -1) { // if the location has already been counted we will skip to 
+        												// the next iteration
+        		continue;
+        	}
+        	locationList.add(location); // adds location string to locationList to ensure we do not count the same location
+        	int locationCounter = 1; // first instance of location id
+        	
+        	for (int j = 0; j < applianceList.size(); j++) {
+        		if (j != i) {
+        			if (applianceList.get(j).getLocationID().equals(location)) {
+        				locationCounter++;
+        			}
+        		}
+        		
+        	}
+        	
+        	locationCounterList.add(Integer.valueOf(locationCounter));
+        }
+        for (int i = 0; i < locationList.size(); i++) {
+        	Location loc = new Location(locationList.get(i), locationCounterList.get(i));
+        	locArray.add(loc);
+        }
+        
+        
+        Collections.sort(locArray, new Comparator<Location>(){
+        	public int compare(Location a1, Location a2) {
+        		return Integer.valueOf(a1.numApp).compareTo(a2.numApp);
+        	}
+        });
+	}
+    
+    
+    public static void summaryReport(int uniqueLocations, int timeStep) {
+    	
+    	summary_Report += "TimeStep " + timeStep + ": " + "Total number of locations affected is " + uniqueLocations + "\n";
+    }
+    
+    public static void printStuff(ArrayList<Appliance> applianceList) {
+    	for (int i = 0; i < applianceList.size(); i++ ) {
+    		System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getDescription() + " " + applianceList.get(i).getOnWattage());
+    	}
+    }
+    
+    public static void printApplianceDetail(ArrayList<Appliance> applianceList) {
+    	
+    	System.out.println("TOTAL POWER USED " + calcTotalPowerUsage(applianceList));
+    	for(int i = 0; i < applianceList.size(); i++) {
+    		System.out.println(applianceList.get(i).getDescription()+ "," + applianceList.get(i).getOnWattage() + "," + applianceList.get(i).getSmartStatus()
+    							+ "," + applianceList.get(i).getOnStatus());
+    	}
+    }
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+} // end of PowerGrid SimulationClass
