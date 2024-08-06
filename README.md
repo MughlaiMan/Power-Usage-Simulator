@@ -15,7 +15,7 @@ And make sure any other input you may put in is correct. Like inputting timestep
 
 The menu will keep popping up until you start the simulation, which then starts the simulation.
 
-Some output after the simulation is done will be printed to the console, and there will be some output to the a txt file named output which can be found in the project folder.
+Some output after the simulation is done will be printed to the console, and there will be some output to a txt file named output which can be found in the project folder.
 
 The output on the console and in the file should be easy to understand.
 
