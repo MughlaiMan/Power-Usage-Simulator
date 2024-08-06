@@ -1,6 +1,6 @@
-10000001,VCR,500,0.99,true,0.5
-10000001,Slow Cooker,400,0.99,false,0.0
-10000003,Fan,300,0.99,true,0.5
+1,VCR,500,0.99,false,0.5
+1,Slow Cooker,400,0.99,false,0.0
+1,Fan,300,0.99,false,0.5
 10000003,Lighting - 7 rooms (12 60W),120,0.99,true,0.5
-10000003,Fan (Window),80,0.99,true,0.5
-10000004,Lighting - Fluorescent 2 bulb,400,0.99,false,0.0
+10000004,Fan (Window),80,0.99,true,0.5
+10000005,Lighting - Fluorescent 2 bulb,400,0.99,true,0.5

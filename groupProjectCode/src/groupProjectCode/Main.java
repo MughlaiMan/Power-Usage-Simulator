@@ -24,6 +24,8 @@ public class Main {
     	int lowCount = 0;
     	int brownCount = 0;
     	
+    	
+    	String maxEffLoc = "";
     	String output = ""; 
     	
         Scanner scnr = new Scanner(System.in);
@@ -198,6 +200,12 @@ public class Main {
 	        		if (applianceList.get(k).getSmartStatus() && applianceList.get(k).getOnStatus()) {
 	        			applianceToLow(applianceList, k);
 	        			
+	        			for (int i = 0; i < allLocations.size(); i++) {
+	        				if (applianceList.get(k).getLocationID().equals(allLocations.get(i).getlocID())) {
+	        					incrementAffectedLocation(allLocations, i);
+	        				}
+	        			}
+	        			
 	        			lowCount++;
 	        			
 	        			if (affectedApp.indexOf(applianceList.get(k).getAppID()) == -1) {
@@ -253,6 +261,14 @@ public class Main {
 		        		
 		        		if(applianceList.get(j).getLocationID().equals(locArray.get(i).getlocID())) {
 		        			brownOutAppliance(applianceList,j);
+		        			
+		        			
+		        			for (int b = 0; b < allLocations.size(); b++) {
+		        				if (applianceList.get(j).getLocationID().equals(allLocations.get(b).getlocID())) {
+		        					incrementAffectedLocation(allLocations, b);
+		        				}
+		        			}
+		        			
 		        			if (affectedApp.indexOf(applianceList.get(j).getAppID()) == -1) {
 		        				affectedApp.add(applianceList.get(j).getAppID());
 		        			}
@@ -309,12 +325,7 @@ public class Main {
 	        
 	        
 	        
-	        for (int i = 0; i < allLocations.size(); i++) {
-	        	if (affectedLocations.indexOf(allLocations.get(i).getlocID()) != -1) {
-	        		incrementAffectedLocation(allLocations, i);
-	        	}
-	        }
-	        
+	 
 	        
 	        Collections.sort(allLocations, new Comparator<Location>(){
 	        	public int compare(Location a1, Location a2) {
@@ -322,8 +333,9 @@ public class Main {
 	        	}
 	        });
 	        
+	      
 	        
-	        String maxEffLoc = allLocations.get(0).getlocID();
+	        maxEffLoc = allLocations.get(0).getlocID();
 	        
 	        if (lowCount==0 && brownCount==0) {
 	        	maxEffLoc = "None";
@@ -361,10 +373,6 @@ public class Main {
 	        
 	        output += "\n";
 	        
-	        
-	        
-	        printApplianceDetail(applianceList);
-        
         }
         
        
@@ -373,6 +381,7 @@ public class Main {
         
        System.out.println(summary_Report);
        
+       System.out.println("Max Effected Location Is: " + maxEffLoc);
        
        
  
@@ -563,21 +572,12 @@ public class Main {
     
     public static void summaryReport(int uniqueLocations, int timeStep, String maxEffLoc) {
     	
-    	summary_Report += "TimeStep " + timeStep + ": " + "Total number of locations affected is " + uniqueLocations + "\n" + "Max affected location is: " + maxEffLoc + "\n";
+    	summary_Report += "TimeStep " + timeStep + ": " + "Total number of locations affected is " + uniqueLocations + "\n";
     }
     
     public static void printStuff(ArrayList<Appliance> applianceList) {
     	for (int i = 0; i < applianceList.size(); i++ ) {
     		System.out.println(applianceList.get(i).getLocationID() + " " + applianceList.get(i).getDescription() + " " + applianceList.get(i).getOnWattage());
-    	}
-    }
-    
-    public static void printApplianceDetail(ArrayList<Appliance> applianceList) {
-    	
-    	System.out.println("TOTAL POWER USED " + calcTotalPowerUsage(applianceList));
-    	for(int i = 0; i < applianceList.size(); i++) {
-    		System.out.println(applianceList.get(i).getDescription()+ "," + applianceList.get(i).getOnWattage() + "," + applianceList.get(i).getSmartStatus()
-    							+ "," + applianceList.get(i).getOnStatus());
     	}
     }
     
@@ -588,27 +588,5 @@ public class Main {
     	
     	locations.set(index, location);
     }
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 } // end of PowerGrid SimulationClass

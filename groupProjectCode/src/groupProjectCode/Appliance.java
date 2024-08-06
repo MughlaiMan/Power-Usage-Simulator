@@ -2,13 +2,11 @@ package groupProjectCode;
 import java.util.Random;
 
 public class Appliance{
-    private String type; 
     public int onWattage;
     private double probabilityOn;
     private String applianceID;
     private String locationID;
     private double powerReductionPercentage;
-    private int powerReductionTotal;
     private String description;
     private boolean isSmart; 
     private boolean isOn = false;
@@ -21,15 +19,8 @@ public class Appliance{
     	this.isSmart = isSmart;
     	powerReductionPercentage = percentPowerReduction;
     	this.applianceID = appID;
-    	
-    	this.isOn = onStatus;
-    	
+    	this.isOn = onStatus;	
     }
-    
-    
-    
-    
-    
     
     public String getLocationID() {
     	return locationID;
@@ -45,10 +36,15 @@ public class Appliance{
     	return this.powerReductionPercentage;
     }
     
+    
+    public void setApplianceID(String applianceID) {
+    	this.applianceID = applianceID;
+    }
+    
+    
     public String getAppID() {
     	return this.applianceID;
     }
-    
     
     
     public int getOnWattage() {
@@ -62,8 +58,10 @@ public class Appliance{
     		isOn = true;
     	}
     	else isOn = false;
-    	
-    	
+    }
+    
+    public void setOnStatus(boolean isOn) {
+    	this.isOn = isOn;
     }
     
     public boolean getOnStatus() {
@@ -77,15 +75,5 @@ public class Appliance{
     public void setLowStatus() {
     	this.onWattage =(int) Math.ceil((double)this.onWattage * (1.0 - powerReductionPercentage));
     }
-    
-    public void setOnStatus(boolean isOn) {
-    	this.isOn = isOn;
-    }
-    
-    public void setApplianceID(String applianceID) {
-    	this.applianceID = applianceID;
-    }
-    
-    
-    
+
 }

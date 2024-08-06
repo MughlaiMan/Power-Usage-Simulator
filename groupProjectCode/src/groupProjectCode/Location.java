@@ -20,8 +20,6 @@ public class Location {
 	}
 	
 	
-	
-	
 	public int getAffectedCounter() {
 		return this.affectedCounter;
 	}

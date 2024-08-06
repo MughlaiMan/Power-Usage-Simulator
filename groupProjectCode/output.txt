@@ -1,26 +1,22 @@
 Time Step: 1
 Affected Appliances 
 
-156797,10000001,VCR,500,0.99,true,0.5
-680517,10000003,Fan,300,0.99,true,0.5
-25767,10000003,Lighting - 7 rooms (12 60W),120,0.99,true,0.5
-725762,10000003,Fan (Window),80,0.99,true,0.5
-728399,10000004,Lighting - Fluorescent 2 bulb,400,0.99,false,0.0
+438088,10000005,Lighting - Fluorescent 2 bulb,400,0.99,true,0.5
+364674,10000003,Lighting - 7 rooms (12 60W),120,0.99,true,0.5
+246921,10000004,Fan (Window),80,0.99,true,0.5
 Affected Locations
-10000001
+10000005
 10000003
 10000004
 
 Time Step: 2
 Affected Appliances 
 
-156797,10000001,VCR,500,0.99,true,0.5
-680517,10000003,Fan,300,0.99,true,0.5
-25767,10000003,Lighting - 7 rooms (12 60W),120,0.99,true,0.5
-725762,10000003,Fan (Window),80,0.99,true,0.5
-728399,10000004,Lighting - Fluorescent 2 bulb,400,0.99,false,0.0
+438088,10000005,Lighting - Fluorescent 2 bulb,400,0.99,true,0.5
+364674,10000003,Lighting - 7 rooms (12 60W),120,0.99,true,0.5
+246921,10000004,Fan (Window),80,0.99,true,0.5
 Affected Locations
-10000001
+10000005
 10000003
 10000004
 
