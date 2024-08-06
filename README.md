@@ -1,8 +1,6 @@
 To use our power usage simulation program, you need to do some things first. You first need to put your input file which holds all of the appliances and their info,
 into the project folder. The file may already be in the project folder. Also, make sure the file can be located as soon as you click into the project folder. It shouldn't be nested inside other folder that are in the project folder.
 
-Then, create an empty txt file named output if there already isn't one, in the same directory as the input file. This will be your output file.
-
 Then you first run the program and type in the total allowed wattage that should not be exceeded. The number must be an integer.
 
 Next, you enter the number of timesteps, which must be an integer as well.
@@ -17,7 +15,7 @@ And make sure any other input you may put in is correct. Like inputting timestep
 
 The menu will keep popping up until you start the simulation, which then starts the simulation.
 
-Some output after the simulation is done will be printed to the console, and there will be some output to the txt file you named output which you can open and check.
+Some output after the simulation is done will be printed to the console, and there will be some output to the a txt file named output which can be found in the project folder.
 
 The output on the console and in the file should be easy to understand.
 
