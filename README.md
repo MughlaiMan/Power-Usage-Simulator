@@ -1,7 +1,7 @@
 To use our power usage simulation program, you need to do some things first. You first need to put your input file which holds all of the appliances and their info,
 into the project folder. The file may already be in the project folder. Also, make sure the file can be located as soon as you click into the project folder. It shouldn't be nested inside other folder that are in the project folder.
 
-Then, create an empty txt file named output. This will be your output file.
+Then, create an empty txt file named output if there already isn't one, in the same directory as the input file. This will be your output file.
 
 Then you first run the program and type in the total allowed wattage that should not be exceeded. The number must be an integer.
 
@@ -21,7 +21,4 @@ Some output after the simulation is done will be printed to the console, and the
 
 The output on the console and in the file should be easy to understand.
 
-You can run the program again without worrying about having to delete, move, or create any files again. But you can replace the input file that holds the appliances
-and their info with a new one if you want to change the appliances that are used in the simulation. You can also replace the txt file that will be used to read in additional
-appliances with another txt file that has some other appliances. Or if there isn't already a file for reading in additional appliances in the project folder, you can add one in the project folder.
-But make sure to put it in the right location. You can refer back on this readMe to make sure of that.
+You can run the program again without worrying about having to delete, move, or create any files again. But if you want, you can replace the input file that holds the appliances and their info with a new one if you want to change the appliances that are used in the simulation. You can also (if you want to) replace the txt file that will be used to read in additional appliances with another txt file that has some other appliances. Or if there isn't already a file for reading in additional appliances in the project folder, you can add one in the project folder. But make sure to put it in the right location in the project folder. You can refer back on this readMe to make sure of that.
